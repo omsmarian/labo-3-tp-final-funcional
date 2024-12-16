@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "random": "c",
+        "cmath": "c",
+        "rtc.h": "c",
+        "adc_continuous.h": "c",
+        "esp_xt_wdt.h": "c",
+        "esp_task_wdt.h": "c",
+        "sdkconfig.h": "c"
+    }
+}
