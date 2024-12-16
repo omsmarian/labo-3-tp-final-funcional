@@ -49,7 +49,7 @@
 
 // Tremolo defines
 #define TREMOLO_RATE 22000
-#define TREMOLO_FREQUENCY 5
+#define TREMOLO_FREQUENCY 4
 #define TREMOLO_INCREMENT 2 * M_PI * TREMOLO_FREQUENCY / TREMOLO_RATE
 
 /********************** internal data declaration ****************************/
@@ -128,12 +128,12 @@ void app_main(void)
         if (ret == ESP_OK) {
             adc_digi_output_data_t *p = (adc_digi_output_data_t*)&result[i];
             data = EXAMPLE_ADC_GET_DATA(p);
-            // data -= 2047;
-            data -= 1900; // 1.77V
+            data -= 2047;
+            // data -= 1900; // 1.77V
 
             data_out = data;
 
-            switch (BITCRUSHER)
+            switch (NO_EFFECT)
             {
             case TEST:
                 
@@ -156,7 +156,7 @@ void app_main(void)
                 past_samples[delay_index] = data;
                 delay_index = (delay_index + 1) % (DELAY_BUFFER_SIZE - 1);
                 
-                data_out = (data + 0.65*old) / 2;
+                data_out = (data + 0.5*old) / 2;
                 }
                 break;
 
@@ -164,7 +164,7 @@ void app_main(void)
                 old = past_samples[delay_index];
                 data_out = data + 0.5*old;
                 past_samples[delay_index] = data_out;
-                delay_index = (delay_index + 1) % ((DELAY_BUFFER_SIZE * 100UL) / 1000UL);
+                delay_index = (delay_index + 1) % ((DELAY_BUFFER_SIZE * 300UL) / 1000UL);
                 break;
 
             case TREMOLO:
@@ -177,7 +177,7 @@ void app_main(void)
                 break;
             case SATURATION:
                 // The two-time
-                data_out *= 2;
+                data_out *= 4;
                 data_out = (data_out > 1000) ? (1000) : (data_out);
                 data_out = (data_out < -1000) ? (-1000) : (data_out);
                 break;
@@ -199,8 +199,8 @@ void app_main(void)
             
             // vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD_MICROSECONDS / 1000));
             // data_out += 1900;
-            data_out += 2180;
-            // data_out += 2047;
+            // data_out += 2180;
+            data_out += 2047;
             // clip data out
             if (data_out > 4090) {
                 data_out = 4090;
